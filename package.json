@@ -1,0 +1,28 @@
+{
+  "name": "node_start",
+  "version": "1.0.0",
+  "description": "test playground",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon --verbose"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LesnovArt/Node_start.git"
+  },
+  "author": "Artem_L",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/LesnovArt/Node_start/issues"
+  },
+  "homepage": "https://github.com/LesnovArt/Node_start#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  },
+  "nodemonConfig": {
+    "watch": [
+      "*.js"
+    ]
+  }
+}
