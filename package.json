@@ -4,7 +4,8 @@
   "description": "test playground",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon --verbose"
+    "start": "nodemon --verbose",
+    "top:scan": "node activityMonitor.mjs"
   },
   "repository": {
     "type": "git",
@@ -24,5 +25,8 @@
     "watch": [
       "*.js"
     ]
+  },
+  "dependencies": {
+    "chalk": "^5.2.0"
   }
 }
