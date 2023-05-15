@@ -3,3 +3,7 @@ node_modules
 
 ## folders
 .vscode
+coverage
+
+## log files
+yarn-error.log
