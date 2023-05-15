@@ -1,19 +1,33 @@
 import axios, { AxiosResponse } from "axios";
 import { Holiday } from "../types/holiday";
+import { Query, urlBuilder } from "../utils/urlUtils";
 
 export interface GetPublicHolidaysByCountryAndYearParams {
-  countryCode: Holiday["countryCode"];
-  year: Holiday["launchYear"];
+  countryCode: string;
+  year: number;
+  query?: Query;
 }
 export const BASE_HOLIDAY_URL = "https://date.nager.at/api/v3";
+export const PATH = {
+  publicHolidays: "PublicHolidays",
+  nextPublicHolidays: "NextPublicHolidays",
+  isTodayPublicHoliday: "IsTodayPublicHoliday",
+};
 
 const fetchData = (url: string) => axios.get(url).then((data) => data);
 
 export const getPublicHolidaysByCountryAndYear = ({
   year,
   countryCode,
+  query,
 }: GetPublicHolidaysByCountryAndYearParams): Promise<AxiosResponse<Holiday[]>> =>
-  fetchData(`${BASE_HOLIDAY_URL}/PublicHolidays/${year}/${countryCode}`)
+  fetchData(
+    urlBuilder({
+      baseUrl: BASE_HOLIDAY_URL,
+      paths: [PATH.publicHolidays, year, countryCode],
+      query,
+    })
+  )
     .then((data) => data)
     .catch((error) => {
       throw new Error(error);
@@ -21,18 +35,32 @@ export const getPublicHolidaysByCountryAndYear = ({
 
 //! Usage of existing on Nager.Date API - V3 endpoints
 export const getNextPublicHolidayByCountry = (
-  countryCode: Holiday["countryCode"]
+  countryCode: string,
+  query?: Query
 ): Promise<AxiosResponse<Holiday[]>> =>
-  fetchData(`${BASE_HOLIDAY_URL}/NextPublicHolidays/${countryCode}`)
+  fetchData(
+    urlBuilder({
+      baseUrl: BASE_HOLIDAY_URL,
+      paths: [PATH.nextPublicHolidays, countryCode],
+      query,
+    })
+  )
     .then((data) => data)
     .catch((error) => {
       throw new Error(error);
     });
 
 export const checkIsHolidayTodayByCountry = (
-  countryCode: Holiday["countryCode"]
+  countryCode: string,
+  query?: Query
 ): Promise<AxiosResponse> =>
-  fetchData(`${BASE_HOLIDAY_URL}/IsTodayPublicHoliday/${countryCode}`)
+  fetchData(
+    urlBuilder({
+      baseUrl: BASE_HOLIDAY_URL,
+      paths: [PATH.isTodayPublicHoliday, countryCode],
+      query,
+    })
+  )
     .then((data) => data)
     .catch((error) => {
       throw new Error(error);

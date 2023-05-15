@@ -2,8 +2,8 @@ import {
   isTodayHoliday,
   filterHolidaysFromDate,
   checkStatusForError,
-} from "./helpers";
-import { generateHolidayMock } from "./testUtils";
+} from "../helpers";
+import { generateHolidayMock } from "../testUtils";
 
 const overrides = [
   {
