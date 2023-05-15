@@ -1,4 +1,4 @@
-import { Holiday } from "../types/holiday";
+import { Holiday } from "../../public-holidays/types/holiday";
 
 const defaultHoliday: Holiday = {
   date: "2023-05-13",

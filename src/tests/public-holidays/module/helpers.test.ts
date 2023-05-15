@@ -2,33 +2,11 @@ import {
   isTodayHoliday,
   filterHolidaysFromDate,
   checkStatusForError,
-} from "../helpers";
-import { generateHolidayMock } from "../testUtils";
-
-const overrides = [
-  {
-    name: "Day of Independence",
-    date: "2023-05-13",
-  },
-  {
-    name: "Day of Collaboration",
-    date: "2023-04-10",
-  },
-  {
-    name: "Day of Culture",
-    date: "2023-10-17",
-  },
-  {
-    name: "Day of Science",
-    date: "2023-01-01",
-  },
-];
-
-const countryHolidays = overrides.map((override) => generateHolidayMock(override));
+} from "../../../public-holidays/utils/helpers";
+import { currentDate } from "../constants";
+import { countryHolidays } from "../expect-utils";
 
 describe("isTodayHoliday", () => {
-  const currentDate = "2023-01-01T00:00:00.000Z";
-
   beforeAll(() => jest.useFakeTimers().setSystemTime(new Date(currentDate)));
 
   afterEach(() => jest.resetAllMocks());
