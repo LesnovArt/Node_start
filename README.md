@@ -45,3 +45,19 @@ In case you need to test other methods you should:
 - run `yarn server:test`
 - check the result inside server terminal
 - check the result in the browser
+
+## SHOP API
+
+SHOP API implements some base api-calls on express framework. It is a part of `express` folder.
+To run express you should
+
+- `yarn build`
+- `yarn express`
+
+In case you need developer mode try `yarn express:dev`, which use `tsc --watch & nodemon ...` via `concurrently` and watch after all changes in these folders.
+
+In case you want to test it without postman, you can just check in browser after `build` and `run express` commands:
+
+- `http://localhost:8080/products` for GET all products;
+- `http://localhost:8080/products/1` for GET mocked product with id 1;
+- `http://localhost:8080/profile/cart` for GET user cart or generate it in case it was not still created;
