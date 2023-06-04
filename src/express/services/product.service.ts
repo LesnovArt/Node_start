@@ -1,10 +1,21 @@
-import { products } from "../mocks/products";
+import { ProductModel } from "../data-layer/models";
 
-import { Product } from "../model/product";
+import { Product } from "../models/product";
 
-export const getAllProducts = (): Product[] => {
-  return products;
-};
+export const getAllProducts = async (): Promise<Product[]> =>
+  ProductModel.find()
+    .exec()
+    .then((data) => data)
+    .catch((error) => {
+      console.warn(`Error while request to DB: ${error}`);
+      return [];
+    });
 
-export const getProductById = (productId: string): Product | undefined =>
-  products.find(({ id }) => id === productId);
+export const getProductById = async (productId: string): Promise<Product | null> =>
+  ProductModel.findById(productId)
+    .exec()
+    .then((product) => product)
+    .catch((error) => {
+      console.warn(`Error while request to DB: ${error}`);
+      return null;
+    });

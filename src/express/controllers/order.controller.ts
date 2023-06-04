@@ -2,14 +2,14 @@ import { Response } from "express";
 
 import * as orderAPI from "../services/order.service";
 
-import { Order } from "../model/order";
-import { RequestWithReqBody } from "../model/server";
+import { Order } from "../models/order";
+import { RequestWithReqBody } from "../models/server";
 
-export const createOrder = (req: RequestWithReqBody<{ order: Order }>, res: Response) => {
+export const createOrder = async (req: RequestWithReqBody<{ order: Order }>, res: Response) => {
   const order = req.body.order;
 
   try {
-    const savedOrder = orderAPI.saveOrder(order);
+    const savedOrder = await orderAPI.saveOrder(order);
 
     res.status(200).send(savedOrder);
   } catch (error) {

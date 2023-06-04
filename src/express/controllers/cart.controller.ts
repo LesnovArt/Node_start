@@ -2,21 +2,21 @@ import { Response } from "express";
 
 import * as cartAPI from "../services/cart.service";
 
-import { RequestWithReqBody, RequestWithAuthQuery } from "../model/server";
-import { CartItem } from "../model/cart";
+import { RequestWithReqBody, RequestWithAuthQuery } from "../models/server";
+import { CartItem } from "../models/cart";
 
-export const getUserCart = (req: RequestWithAuthQuery, res: Response) => {
+export const getUserCart = async (req: RequestWithAuthQuery, res: Response) => {
   const id = req.query.user.id;
 
   try {
-    const userCart = cartAPI.getUserCart(id);
+    const userCart = await cartAPI.getUserCart(id);
 
     if (userCart) {
       res.status(200).send(userCart);
       return;
     }
 
-    const newUserCart = cartAPI.createUserCart(id);
+    const newUserCart = await cartAPI.createUserCart(id);
 
     res.status(201).send(newUserCart);
   } catch (error) {
@@ -24,14 +24,14 @@ export const getUserCart = (req: RequestWithAuthQuery, res: Response) => {
   }
 };
 
-export const updateUserCart = (
+export const updateUserCart = async (
   req: RequestWithReqBody<{ id: string; items: CartItem[] }>,
   res: Response
 ) => {
   const { id, items } = req.body;
 
   try {
-    const updatedCart = cartAPI.updateUserCart(id, items);
+    const updatedCart = await cartAPI.updateUserCart(id, items);
 
     res.status(200).send(updatedCart);
   } catch (error) {
@@ -39,11 +39,11 @@ export const updateUserCart = (
   }
 };
 
-export const deleteUserCart = (req: RequestWithAuthQuery, res: Response) => {
+export const deleteUserCart = async (req: RequestWithAuthQuery, res: Response) => {
   const id = req.query.user.id;
 
   try {
-    const deletedCart = cartAPI.deleteUserCart(id);
+    const deletedCart = await cartAPI.deleteUserCart(id);
 
     res.status(200).send(deletedCart);
   } catch (error) {

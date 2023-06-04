@@ -3,9 +3,7 @@ import express, { Response } from "express";
 import * as CartController from "../controllers/cart.controller";
 import * as OrderController from "../controllers/order.controller";
 
-import { RequestWithReqBody, RequestWithAuthQuery } from "../model/server";
-import { CartItem } from "../model/cart";
-import { Order } from "../model/order";
+import { RequestWithReqBody, RequestWithAuthQuery, CartItem, Order } from "../models";
 
 export const profileRouter = express.Router();
 
