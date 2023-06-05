@@ -14,4 +14,4 @@ export const cartSchema = new Schema({
   items: [cartItemSchema],
 });
 
-export const CartModel = model<CartFull & Document>("Cart", cartSchema);
+export const CartRepository = model<CartFull & Document>("Cart", cartSchema);

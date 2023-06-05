@@ -1,9 +1,9 @@
-import { ProductModel } from "../data-layer/models";
+import { ProductRepository } from "../data-layer/repositories";
 
 import { Product } from "../models/product";
 
 export const getAllProducts = async (): Promise<Product[]> =>
-  ProductModel.find()
+  ProductRepository.find()
     .exec()
     .then((data) => data)
     .catch((error) => {
@@ -12,7 +12,7 @@ export const getAllProducts = async (): Promise<Product[]> =>
     });
 
 export const getProductById = async (productId: string): Promise<Product | null> =>
-  ProductModel.findById(productId)
+  ProductRepository.findById(productId)
     .exec()
     .then((product) => product)
     .catch((error) => {

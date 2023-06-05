@@ -1,10 +1,10 @@
-import { CartModel } from "../data-layer/models";
+import { CartRepository } from "../data-layer/repositories";
 import { generateStringId, getMainCartData } from "../helpers";
 
 import { CartFull, Cart, CartItem } from "../models";
 
 export const getFullUserCart = async (userId: string): Promise<CartFull | null> =>
-  CartModel.findOne({ userId })
+CartRepository.findOne({ userId })
     .lean()
     .exec()
     .then((cart) => cart)
@@ -33,7 +33,7 @@ export const createUserCart = async (userId: string): Promise<Cart | null> => {
   };
 
   try {
-    await CartModel.create(newCart);
+    await CartRepository.create(newCart);
 
     return getMainCartData(newCart);
   } catch (error) {
@@ -64,7 +64,7 @@ const makeUpdate = async ({
       throw new Error(`Empty data for update cart with id: ${userId}`);
     }
 
-    const updatedCart = await CartModel.findOneAndUpdate(
+    const updatedCart = await CartRepository.findOneAndUpdate(
       { userId },
       { ...cart, items: [...cart.items, ...(cartItems || [])], ...cartDetails },
       { new: true }

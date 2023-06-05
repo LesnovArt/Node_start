@@ -7,4 +7,4 @@ export const profileSchema = new Schema({
   cartId: { type: String },
 });
 
-export const ProfileModel = model<Profile & Document>("Profile", profileSchema);
+export const ProfileRepository = model<Profile & Document>("Profile", profileSchema);

@@ -8,4 +8,4 @@ export const productSchema = new Schema<Product>({
   price: { type: Number, required: true },
 });
 
-export const ProductModel = model<Product & Document>("Product", productSchema);
+export const ProductRepository = model<Product & Document>("Product", productSchema);

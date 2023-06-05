@@ -1,4 +1,4 @@
-import { OrderModel } from "../data-layer/models";
+import { OrderRepository } from "../data-layer/repositories";
 import { orders } from "../mocks/order";
 
 import { Order } from "../models/order";
@@ -8,13 +8,13 @@ export const getOrder = (orderId: string): Order | undefined =>
 
 export const saveOrder = async (order: Order): Promise<Order | null> => {
   try {
-    const existingOrder = await OrderModel.findById(order.id).lean().exec();
+    const existingOrder = await OrderRepository.findById(order.id).lean().exec();
 
     if (existingOrder) {
       throw new Error("Order has been already created");
     }
 
-    await OrderModel.create();
+    await OrderRepository.create();
     return order;
   } catch (error) {
     console.warn(`Error while creating order in DB: ${error}`);

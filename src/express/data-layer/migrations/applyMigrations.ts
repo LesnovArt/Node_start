@@ -2,11 +2,13 @@ import { MongoClient } from "mongodb";
 import migrateMongo from "migrate-mongo";
 import path from "path";
 
+import { MONGO_URL } from "../../constants";
+
 export const applyMigrations = async () => {
   try {
     const config = {
       mongodb: {
-        url: "mongodb://mongodb:27017/express-mongoDB",
+        url: MONGO_URL,
         options: {},
       },
       migrationsDir: path.join(__dirname, "migrations"),

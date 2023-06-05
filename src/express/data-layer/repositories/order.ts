@@ -21,4 +21,4 @@ export const orderSchema = new Schema({
   total: { type: Number },
 });
 
-export const OrderModel = model<Order& Document>("Order", orderSchema);
+export const OrderRepository = model<Order& Document>("Order", orderSchema);

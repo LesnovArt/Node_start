@@ -1,9 +1,9 @@
-import { ProfileModel } from "../data-layer/models";
+import { ProfileRepository } from "../data-layer/repositories";
 import { Profile } from "../models";
 
 export const auth = async (userId: string, email: string): Promise<Profile | null> => {
   try {
-    const loggedInProfile = await ProfileModel.findOne({ id: userId, email });
+    const loggedInProfile = await ProfileRepository.findOne({ id: userId, email });
 
     if (!loggedInProfile) {
       return null;
