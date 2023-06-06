@@ -1,4 +1,4 @@
-import { CartFull } from "../model/cart";
+import { CartFull } from "../models";
 
 export const carts: CartFull[] = [
   {

@@ -2,9 +2,9 @@ import { Response, Request } from "express";
 
 import * as productAPI from "../services/product.service";
 
-export const getProducts = (_req: Request, res: Response) => {
+export const getProducts = async (_req: Request, res: Response) => {
   try {
-    const products = productAPI.getAllProducts();
+    const products = await productAPI.getAllProducts();
 
     res.status(200).send(products);
   } catch (error) {
@@ -12,11 +12,11 @@ export const getProducts = (_req: Request, res: Response) => {
   }
 };
 
-export const getProductById = (req: Request, res: Response) => {
+export const getProductById = async (req: Request, res: Response) => {
   const { id } = req.params;
 
   try {
-    const product = productAPI.getProductById(id);
+    const product = await productAPI.getProductById(id);
 
     if (!product) {
       res.status(404).send({ error: `Product with id ${id} was not found` });
