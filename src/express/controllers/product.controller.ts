@@ -1,6 +1,6 @@
 import { Response, Request } from "express";
 
-import * as productAPI from "../services/product.service";
+import * as productAPI from "../services/product.service.js";
 
 export const getProducts = async (_req: Request, res: Response) => {
   try {

@@ -1,7 +1,7 @@
 import { Response, NextFunction } from "express";
 
-import * as AuthController from "../controllers/profile.controller";
-import { RequestWithAuthQuery } from "../models/server";
+import * as AuthController from "../controllers/profile.controller.js";
+import { RequestWithAuthQuery } from "../models/server.js";
 
 const checkHeaders = (headers: unknown[]): boolean =>
   headers.every((header) => header && typeof header === "string");

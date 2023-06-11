@@ -1,21 +1,14 @@
-import { ProductRepository } from "../data-layer/repositories";
+import { EntityRepository } from "@mikro-orm/core";
 
-import { Product } from "../models/product";
+import { Product } from "../data-layer/entities/index.js";
+import { DI } from "../../microORM/index.js";
 
-export const getAllProducts = async (): Promise<Product[]> =>
-  ProductRepository.find()
-    .exec()
-    .then((data) => data)
-    .catch((error) => {
-      console.warn(`Error while request to DB: ${error}`);
-      return [];
-    });
+export const getAllProducts = async (): Promise<Product[]> => {
+  const productRepository: EntityRepository<Product> = DI.productRepository;
+  return productRepository.findAll();
+};
 
-export const getProductById = async (productId: string): Promise<Product | null> =>
-  ProductRepository.findById(productId)
-    .exec()
-    .then((product) => product)
-    .catch((error) => {
-      console.warn(`Error while request to DB: ${error}`);
-      return null;
-    });
+export const getProductById = async (productId: string): Promise<Product | null> => {
+  const productRepository = DI.productRepository.getEntityManager();
+  return productRepository.findOneOrFail(Product, { id: productId });
+};

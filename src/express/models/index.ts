@@ -1,5 +1,5 @@
-export { Product } from "./product";
-export { Cart, CartFull, CartItem } from "./cart";
-export { Order } from "./order";
-export { Profile } from "./profile";
-export * from "./server";
+export { Product } from "./product.js";
+export { Cart, CartFull, CartItem } from "./cart.js";
+export { Order } from "./order.js";
+export { Profile } from "./profile.js";
+export * from "./server.js";

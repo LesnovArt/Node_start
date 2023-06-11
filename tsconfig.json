@@ -1,13 +1,17 @@
 {
   "compilerOptions": {
-    "target": "es6",
-    "module": "commonjs",
-    "outDir": "dist",
+    "outDir": "./dist",
     "strict": true,
-    "esModuleInterop": true,
     "skipLibCheck": true,
-    "allowJs": true
+    "allowJs": true,
+    "module": "ESNext",
+    "target": "ESNext",
+    "moduleResolution": "node",
+    "declaration": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "esModuleInterop": true
   },
-  "include": ["src/**/*.ts", "migrate-mongo-config.js"],
+  "include": ["src/**/*.ts", "orm.config.ts"],
   "exclude": ["node_modules", "dist"]
 }

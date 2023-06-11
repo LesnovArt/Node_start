@@ -1,16 +1,37 @@
 version: "3"
 services:
-  server:
+  app:
     build:
       context: .
       dockerfile: Dockerfile
+    restart: always
     ports:
-      - 3000:3000
+      - 8000:3000
     depends_on:
-      - mongodb
+      - postgres-db
     environment:
-      - MONGODB_URL=mongodb://mongodb:27017/express-mongoDB
-  mongodb:
-    image: mongo:latest
+      - POSTGRES_PASSWORD=password123
+      - POSTGRES_URL=postgres://node_rdb:password123@postgres-db:5432/node_rdb
+      - MIKRO_ORM_DB_NAME=node_rdb
+      - MIKRO_ORM_USER=node_rdb
+      - MIKRO_ORM_PASSWORD=password123
+      - MIKRO_ORM_HOST=postgres-db
+  postgres-db:
+    image: postgres:12
+    restart: always
+    container_name: node_rdb
+    environment:
+      - POSTGRES_PASSWORD=password123
+      - POSTGRES_URL=postgres://node_rdb:password123@postgres-db:5432/node_rdb
+      - MIKRO_ORM_DB_NAME=node_rdb
+      - MIKRO_ORM_USER=node_rdb
+      - MIKRO_ORM_PASSWORD=password123
+      - MIKRO_ORM_HOST=postgres-db
+    restart: always
     ports:
-      - 27017:27017
+      - 5432:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

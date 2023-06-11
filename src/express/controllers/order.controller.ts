@@ -1,9 +1,9 @@
 import { Response } from "express";
 
-import * as orderAPI from "../services/order.service";
+import * as orderAPI from "../services/order.service.js";
 
-import { Order } from "../models/order";
-import { RequestWithReqBody } from "../models/server";
+import { Order } from "../models/order.js";
+import { RequestWithReqBody } from "../models/server.js";
 
 export const createOrder = async (req: RequestWithReqBody<{ order: Order }>, res: Response) => {
   const order = req.body.order;

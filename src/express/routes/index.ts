@@ -1,7 +1,7 @@
 import express from "express";
 
-import { profileRouter } from "./profile.routes";
-import { productRouter } from "./product.routes";
+import { profileRouter } from "./profile.routes.js";
+import { productRouter } from "./product.routes.js";
 
 export const router = express.Router();
 

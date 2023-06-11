@@ -1,9 +1,9 @@
 import express, { Response } from "express";
 
-import * as CartController from "../controllers/cart.controller";
-import * as OrderController from "../controllers/order.controller";
+import * as CartController from "../controllers/cart.controller.js";
+import * as OrderController from "../controllers/order.controller.js";
 
-import { RequestWithReqBody, RequestWithAuthQuery, CartItem, Order } from "../models";
+import { RequestWithReqBody, RequestWithAuthQuery, CartItem, Order } from "../models/index.js";
 
 export const profileRouter = express.Router();
 
