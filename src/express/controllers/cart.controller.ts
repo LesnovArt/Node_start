@@ -1,9 +1,9 @@
 import { Response } from "express";
 
-import * as cartAPI from "../services/cart.service";
+import * as cartAPI from "../services/cart.service.js";
 
-import { RequestWithReqBody, RequestWithAuthQuery } from "../models/server";
-import { CartItem } from "../models/cart";
+import { RequestWithReqBody, RequestWithAuthQuery } from "../models/server.js";
+import { CartItem } from "../models/cart.js";
 
 export const getUserCart = async (req: RequestWithAuthQuery, res: Response) => {
   const id = req.query.user.id;

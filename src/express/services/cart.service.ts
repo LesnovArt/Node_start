@@ -1,43 +1,45 @@
-import { CartRepository } from "../data-layer/repositories";
-import { generateStringId, getMainCartData } from "../helpers";
+import { Collection, EntityRepository } from "@mikro-orm/core";
 
-import { CartFull, Cart, CartItem } from "../models";
+import { Cart, CartItem, Profile, Product } from "../data-layer/entities/index.js";
+import { generateStringId, getMainCartData } from "../helpers/index.js";
+import { CartFull, CartItem as CartItemModel } from "../models/index.js";
+import { DI } from "../../microORM/index.js";
 
-export const getFullUserCart = async (userId: string): Promise<CartFull | null> =>
-CartRepository.findOne({ userId })
-    .lean()
-    .exec()
-    .then((cart) => cart)
-    .catch((error) => {
-      console.warn(`Error while request to DB: ${error}`);
-      return null;
-    });
+export const getFullUserCart = async (userId: string): Promise<Cart | null> => {
+  const cartRepository: EntityRepository<Cart> = DI.cartRepository;
+  return cartRepository.findOne({ id: userId });
+};
 
 export const getUserCart = async (userId: string): Promise<Cart | null> => {
-  const cart = await getFullUserCart(userId);
+  const cartRepository = DI.cartRepository.getEntityManager();
+  const cart = await cartRepository.findOne(Cart, { id: userId });
+
   if (!cart || (cart && cart.isDeleted)) {
     return null;
   }
 
-  return getMainCartData(cart);
+  return cart;
 };
 
 export const createUserCart = async (userId: string): Promise<Cart | null> => {
   const cartId = generateStringId();
+  const profileRepository = DI.profileRepository.getEntityManager();
+  const profile = await profileRepository.findOneOrFail(Profile, { id: userId });
 
-  const newCart = {
+  const newCart: Cart = {
     id: cartId,
-    userId,
-    items: [],
+    profile,
+    items: new Collection<CartItem>([]),
     isDeleted: false,
   };
 
   try {
-    await CartRepository.create(newCart);
+    const cartRepository = DI.cartRepository.getEntityManager();
+    await cartRepository.persistAndFlush(newCart);
 
-    return getMainCartData(newCart);
+    return newCart;
   } catch (error) {
-    console.warn(`Error while request to DB: ${error}`);
+    console.warn(`Error while creating cart in DB: ${error}`);
 
     return null;
   }
@@ -45,9 +47,9 @@ export const createUserCart = async (userId: string): Promise<Cart | null> => {
 
 interface MakeUpdateProps {
   userId: string;
-  cart: CartFull | null;
+  cart: Cart | null;
   cartDetails?: Partial<CartFull>;
-  cartItems?: CartItem[];
+  cartItems?: CartItemModel[];
 }
 
 const makeUpdate = async ({
@@ -55,39 +57,49 @@ const makeUpdate = async ({
   cart,
   cartDetails,
   cartItems,
-}: MakeUpdateProps): Promise<Cart | null> => {
+}: MakeUpdateProps): Promise<Pick<Cart, "items" | "id"> | null> => {
   try {
     if (!cart || (cart && cart.isDeleted)) {
-      throw new Error(`User do not have cart with id: ${userId}`);
+      throw new Error(`User does not have a cart with id: ${userId}`);
     }
     if (!cartItems?.length || !cartDetails) {
-      throw new Error(`Empty data for update cart with id: ${userId}`);
+      throw new Error(`Empty data for updating cart with id: ${userId}`);
     }
 
-    const updatedCart = await CartRepository.findOneAndUpdate(
-      { userId },
-      { ...cart, items: [...cart.items, ...(cartItems || [])], ...cartDetails },
-      { new: true }
-    );
+    const cartRepository = DI.cartRepository.getEntityManager();
 
-    if (!updatedCart) {
-      throw new Error(`Update cart with id: ${userId} failed`);
+    cart.isDeleted = cartDetails.isDeleted ?? cart.isDeleted;
+    if (cart.items?.length) {
+      cart.items.removeAll();
     }
+    cartItems.forEach(async (item) => {
+      const cartItemId = generateStringId();
+      const productRepository = DI.productRepository.getEntityManager();
+      const product = await productRepository.findOneOrFail(Product, { id: item.product.id });
 
-    return getMainCartData(updatedCart);
+      cart.items.add({ ...item, product, id: cartItemId, cart });
+    });
+
+    await cartRepository.persistAndFlush(cart);
+
+    return getMainCartData(cart);
   } catch (error) {
     return null;
   }
 };
+
 export const updateUserCart = async (
   userId: string,
-  cartItems: CartItem[]
-): Promise<Cart | null> => {
+  cartItems: CartItemModel[]
+): Promise<Pick<Cart, "items" | "id"> | null> => {
   const cart = await getFullUserCart(userId);
+
   return makeUpdate({ userId, cart, cartItems });
 };
 
-export const deleteUserCart = async (userId: string): Promise<Cart | null> => {
+export const deleteUserCart = async (
+  userId: string
+): Promise<Pick<Cart, "items" | "id"> | null> => {
   const cart = await getFullUserCart(userId);
   return makeUpdate({ userId, cartDetails: { isDeleted: true }, cart });
 };

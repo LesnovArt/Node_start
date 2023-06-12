@@ -1,3 +1,7 @@
-import { Cart, CartFull } from "../models/cart";
+import { Cart } from "../data-layer/entities/index.js";
 
-export const getMainCartData = ({ userId, isDeleted, ...rest }: CartFull): Cart => rest;
+export const getMainCartData = ({
+  profile,
+  isDeleted,
+  ...rest
+}: Cart): Pick<Cart, "items" | "id"> => rest;

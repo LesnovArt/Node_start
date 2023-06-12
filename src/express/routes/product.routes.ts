@@ -1,7 +1,6 @@
-import express from "express";
+import express, { Response, Request } from "express";
 
-import { Response, Request } from "express";
-import * as ProductController from "../controllers/product.controller";
+import * as ProductController from "../controllers/product.controller.js";
 
 export const productRouter = express.Router();
 

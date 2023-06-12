@@ -1,5 +1,5 @@
-import { Product } from "./product";
-import { Profile } from "./profile";
+import { Product } from "./product.js";
+import { Profile } from "./profile.js";
 
 export interface Cart {
   id: string;
