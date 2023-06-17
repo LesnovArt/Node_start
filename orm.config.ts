@@ -17,12 +17,12 @@ import { CustomMigrationGenerator } from "./src/microORM/customMigrationGenerato
 export const options: Options<PostgreSqlDriver> = {
   entities: [Product, CartItem, Cart, Profile, Order],
   entitiesTs: [Product, CartItem, Cart, Profile, Order],
-  dbName: process.env.MIKRO_ORM_DB_NAME || "node_rdb",
-  user: process.env.MIKRO_ORM_USER || "node_rdb",
+  dbName: process.env.POSTGRES_DB || "node_rdb",
+  user: process.env.POSTGRES_USER || "node_rdb",
   type: "postgresql",
-  host: process.env.MIKRO_ORM_HOST || "localhost",
+  host: process.env.POSTGRES_HOST || "localhost",
   port: 5432,
-  password: process.env.MIKRO_ORM_PASSWORD || "password123",
+  password: process.env.POSTGRES_PASSWORD || "password123",
   migrations: {
     pathTs: "./src/migrations",
     path: "./dist/src/migrations",

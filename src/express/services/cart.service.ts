@@ -11,8 +11,7 @@ export const getFullUserCart = async (userId: string): Promise<Cart | null> => {
 };
 
 export const getUserCart = async (userId: string): Promise<Cart | null> => {
-  const cartRepository = DI.cartRepository.getEntityManager();
-  const cart = await cartRepository.findOne(Cart, { id: userId });
+  const cart = await DI.cartRepository.findOne({ profile: userId });
 
   if (!cart || (cart && cart.isDeleted)) {
     return null;
@@ -26,12 +25,7 @@ export const createUserCart = async (userId: string): Promise<Cart | null> => {
   const profileRepository = DI.profileRepository.getEntityManager();
   const profile = await profileRepository.findOneOrFail(Profile, { id: userId });
 
-  const newCart: Cart = {
-    id: cartId,
-    profile,
-    items: new Collection<CartItem>([]),
-    isDeleted: false,
-  };
+  const newCart: Cart = new Cart(cartId, profile, false);
 
   try {
     const cartRepository = DI.cartRepository.getEntityManager();
