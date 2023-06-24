@@ -5,8 +5,11 @@ import jwt from "jsonwebtoken";
 import * as profileAPI from "../services/profile.service.js";
 import { Role } from "../models/index.js";
 import { EXPIRE_JWT } from "../constants.js";
+import { logAuth } from "../debug/index.js";
 
 export const loginProfile = async (req: Request, res: Response) => {
+  logAuth(`Login was started`);
+
   const { email, password } = req.body;
 
   if (!(email && password)) {
@@ -35,13 +38,14 @@ export const loginProfile = async (req: Request, res: Response) => {
 
     res.status(400).send("Invalid Credentials");
   } catch (error) {
+    logAuth(`Login endpoint access failed with error: ${error}`);
     res.status(400).send(`Error while retrieving data from DB: ${error}`);
   }
 };
 
 export const registerProfile = async (req: Request, res: Response) => {
+  logAuth(`Registration was started`);
   const { isAdmin, email, password } = req.body;
-
   if (!(email && password)) {
     res.status(400).send("All inputs are required");
     return;
@@ -66,6 +70,7 @@ export const registerProfile = async (req: Request, res: Response) => {
 
     res.status(201).send("User successfully registered");
   } catch (error) {
+    logAuth(`Register endpoint access failed with error: ${error}`);
     res.status(400).send({ error: "Bad request" });
   }
 };

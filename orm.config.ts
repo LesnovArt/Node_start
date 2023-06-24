@@ -21,7 +21,7 @@ export const options: Options<PostgreSqlDriver> = {
   user: process.env.POSTGRES_USER || "node_rdb",
   type: "postgresql",
   host: process.env.POSTGRES_HOST || "localhost",
-  port: 5432,
+  port: Number(process.env.POSTGRES_PORT) || 5432,
   password: process.env.POSTGRES_PASSWORD || "password123",
   migrations: {
     pathTs: "./src/migrations",
