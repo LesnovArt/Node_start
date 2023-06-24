@@ -1,37 +1,18 @@
 version: "3"
 services:
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    restart: always
-    ports:
-      - 8000:3000
-    depends_on:
-      - postgres-db
-    environment:
-      - POSTGRES_PASSWORD=password123
-      - POSTGRES_URL=postgres://node_rdb:password123@postgres-db:5432/node_rdb
-      - MIKRO_ORM_DB_NAME=node_rdb
-      - MIKRO_ORM_USER=node_rdb
-      - MIKRO_ORM_PASSWORD=password123
-      - MIKRO_ORM_HOST=postgres-db
   postgres-db:
-    image: postgres:12
+    image: postgres:15.3-alpine3.18
     restart: always
-    container_name: node_rdb
+    container_name: postgres-nmp
     environment:
       - POSTGRES_PASSWORD=password123
-      - POSTGRES_URL=postgres://node_rdb:password123@postgres-db:5432/node_rdb
-      - MIKRO_ORM_DB_NAME=node_rdb
-      - MIKRO_ORM_USER=node_rdb
-      - MIKRO_ORM_PASSWORD=password123
-      - MIKRO_ORM_HOST=postgres-db
-    restart: always
+      - POSTGRES_USER=node_rdb
+      - POSTGRES_DB=node_rdb
     ports:
       - 5432:5432
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
+      - postgres_data:/var/lib/postgresql/data-nmp
 
 volumes:
   postgres_data:

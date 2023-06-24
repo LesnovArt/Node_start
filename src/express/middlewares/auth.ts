@@ -1,45 +1,32 @@
 import { Response, NextFunction } from "express";
+import * as jwt from "jsonwebtoken";
 
-import * as AuthController from "../controllers/profile.controller.js";
 import { RequestWithAuthQuery } from "../models/server.js";
-
-const checkHeaders = (headers: unknown[]): boolean =>
-  headers.every((header) => header && typeof header === "string");
+import { Profile } from "../models/index.js";
 
 export const authMiddleware = async (
   req: RequestWithAuthQuery,
   res: Response,
   next: NextFunction
 ) => {
-  // we define headers as strings, but still need to check if that's true
-  const id = (req.headers["x-user-id"] as string) || "profile-id-1";
-  const email = (req.headers["x-email"] as string) || "ann@google.com";
+  const authHeader = req.headers.authorization;
 
-  if (checkHeaders([id, email])) {
-    const profile = await AuthController.auth(id, email);
+  if (!authHeader) {
+    return res.status(401).send("Token is required");
+  }
 
-    if (!profile) {
-      res
-        .status(404)
-        .send(
-          `User with provided email: ${email} was not found. Please, check the correctness of login data and try again`
-        );
-      return;
-    }
+  const [tokenType, token] = authHeader.split(" ");
 
-    const user = {
-      id: profile.id,
-      email: profile.email,
-    };
+  if (tokenType !== "Bearer") {
+    return res.status(403).send("Invalid Token");
+  }
 
-    req.query.user = user;
-  } else {
-    res
-      .status(404)
-      .send(
-        `User with provided email: ${email} was not found. Please, check the correctness of login data and try again`
-      );
-    return;
+  try {
+    const user = jwt.verify(token, process.env.TOKEN_KEY!);
+
+    req.query.user = user as Profile;
+  } catch (error) {
+    return res.status(401).send("Invalid Token");
   }
 
   next();
