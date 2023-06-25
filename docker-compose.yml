@@ -1,18 +1,44 @@
-version: "3"
+version: "3.1"
 services:
-  postgres-db:
+  app:
+    container_name: express
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      - NODE_ENV=production
+      - TOKEN_KEY=ngp-express-art
+      - SERVER_PORT=8000
+      - SERVER_HOST=0.0.0.0
+      - DEBUG=app:*
+      - DEBUG_NS_AUTH=app:auth
+      - DEBUG_NS_CONNECTION=app:connection
+      - LOG_LEVEL=info
+    depends_on:
+      - postgres-nmp-lts
+    networks:
+      - gmp_network
+  postgres-nmp-lts:
     image: postgres:15.3-alpine3.18
     restart: always
-    container_name: postgres-nmp
+    container_name: postgres-nmp-lts
     environment:
       - POSTGRES_PASSWORD=password123
       - POSTGRES_USER=node_rdb
       - POSTGRES_DB=node_rdb
+      - POSTGRES_PORT=5432
+      - POSTGRES_HOST=postgres-nmp-lts
     ports:
       - 5432:5432
     volumes:
       - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
       - postgres_data:/var/lib/postgresql/data-nmp
-
+    networks:
+      - gmp_network
+networks:
+  gmp_network:
 volumes:
   postgres_data:

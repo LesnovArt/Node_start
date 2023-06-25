@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken";
 import * as profileAPI from "../services/profile.service.js";
 import { Role } from "../models/index.js";
 import { EXPIRE_JWT } from "../constants.js";
-import { logAuth } from "../debug/index.js";
+import { logAuth, logger } from "../debug/index.js";
 
 export const loginProfile = async (req: Request, res: Response) => {
   logAuth(`Login was started`);
@@ -38,7 +38,7 @@ export const loginProfile = async (req: Request, res: Response) => {
 
     res.status(400).send("Invalid Credentials");
   } catch (error) {
-    logAuth(`Login endpoint access failed with error: ${error}`);
+    logger.error({ error }, `Login endpoint access failed with error`);
     res.status(400).send(`Error while retrieving data from DB: ${error}`);
   }
 };
@@ -70,7 +70,7 @@ export const registerProfile = async (req: Request, res: Response) => {
 
     res.status(201).send("User successfully registered");
   } catch (error) {
-    logAuth(`Register endpoint access failed with error: ${error}`);
+    logger.error({ error }, `Register endpoint access failed with error`);
     res.status(400).send({ error: "Bad request" });
   }
 };

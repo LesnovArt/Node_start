@@ -14,13 +14,13 @@ import { options } from "../../orm.config.js";
 import { authMiddleware } from "./middlewares/auth.js";
 import { healthRouter, loginRouter, registerRouter, router } from "./routes/index.js";
 import { BASE_URL, FORCE_SHUT_DOWN_TIME } from "./constants.js";
-import { logConnection } from "./debug/index.js";
+import { logConnection, logger } from "./debug/index.js";
 
 const app = express();
 const connections: Socket[] = [];
 
-const handleRequestError: ErrorRequestHandler = (error, _req, res, next) => {
-  logConnection(`Endpoint and DB connection failed with error ${error}`);
+const handleRequestError: ErrorRequestHandler = (error, req, res, next) => {
+  logger.error({ error, req, res }, "Internal Server Error");
   res.status(500).json({ error: "Internal Server Error" });
 
   next(error);
@@ -31,13 +31,15 @@ const startServer = async () => {
     logConnection(`App starting...`);
     logConnection(`DB initializing...`);
     DI.orm = await MikroORM.init<PostgreSqlDriver>(options);
-    logConnection(`Data base was successfully initialized `);
 
-    defineRepositories();
     logConnection(`Creating repositories...`);
+    defineRepositories();
+
+    logConnection(`Migration running...`);
     await upMigration();
 
     app.use(bodyParser.json());
+    logConnection(`Request context connecting...`);
     app.use((_req, _res, next) => RequestContext.create(DI.orm.em, next));
     logConnection(`Connecting routes...`);
     app.get("/", (_req, res) =>
@@ -56,18 +58,24 @@ const startServer = async () => {
     const HOST = process.env.SERVER_HOST || "localhost";
     logConnection(`Initializing listen process...`);
     DI.server = app.listen(PORT, HOST, () => {
+      logger.info(`Server is listening on http://${HOST}:${PORT}. It was started without errors.`);
       console.log(`Server is listening on http://${HOST}:${PORT}`);
     });
 
     DI.server.on("connection", (connection) => {
+      logConnection(`Connection opening...`);
+
+      logger.info({ connection }, "Server made new connection");
       connections.push(connection);
 
       connection.on("close", () => {
+        logConnection(`Connection closing...`);
+        logger.error({ connection }, "Server ends current connection");
+
         connections.filter((currentCon) => connection !== currentCon);
       });
     });
   } catch (error) {
-    logConnection(`Endpoint and DB connection failed with error ${error}`);
     app.use(handleRequestError);
   }
 };
@@ -75,13 +83,10 @@ const startServer = async () => {
 const handleShutdown = async () => {
   if (DI.server) {
     await new Promise((resolve) => DI.server.close(resolve));
-
     logConnection("Closing server...");
-    console.log("Server closed");
 
     await DI.orm.close();
     logConnection("Closing data base connection...");
-    console.log("Data base connection closed");
 
     connections.forEach((connection) => {
       connection.end();
@@ -91,7 +96,7 @@ const handleShutdown = async () => {
     setTimeout(() => {
       logConnection("Force closing all processes...");
 
-      console.log("Could not end processes in time. FORCE END!");
+      logger.error("Could not end processes in time. FORCE END with status (1)");
       process.exit(1);
     }, FORCE_SHUT_DOWN_TIME);
 

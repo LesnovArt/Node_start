@@ -6,8 +6,8 @@ import { logConnection } from "../debug/index.js";
 export const healthRouter = express.Router();
 
 healthRouter.get("/health", async (req, res) => {
-  const isDBConnected = await DI.orm.isConnected();
   logConnection(`checking connection...`);
+  const isDBConnected = await DI.orm.isConnected();
   if (isDBConnected) {
     logConnection(`connection was established`);
 

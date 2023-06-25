@@ -1,6 +1,8 @@
 import { configEnv } from "../../../configENV.js";
 import debug from "debug";
 
+export { logger } from "./createLogger.js";
+
 configEnv();
 const args = process.argv.slice(2);
 

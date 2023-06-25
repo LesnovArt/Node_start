@@ -83,6 +83,11 @@ Put the data into corresponding files inside `express/mocks` folder. Build the a
 ## Logging and Debugging
 
 - `yarn debug` - node debug for developer mode
-- `yarn debug:prod` - node debug for prod mode
+- `yarn debug:prod` - node debug for prod mode (has no bunyan logger)
 - `yarn debug:auth` - node debug for auth in developer mode
 - `yarn debug:connect` - node debug for connection stuff in developer mode
+
+## Docker
+
+- run docker desktop or similar
+- run `docker-compose up --build` for first run and `docker-compose up` later.
