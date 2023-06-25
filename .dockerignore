@@ -11,5 +11,6 @@ coverage/
 jest.config
 .eslintignore
 .eslintrc.json
+yarn-error.log
 
 README.md

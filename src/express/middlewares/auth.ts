@@ -28,7 +28,6 @@ export const authMiddleware = async (
     const user = jwt.verify(token, process.env.TOKEN_KEY || "");
 
     req.query.user = user as Profile;
-    logger.info({ user, token }, "User successfully got into");
   } catch (error) {
     logger.trace({ error }, "Auth error");
     return res.status(401).send("Invalid Token");

@@ -2,7 +2,7 @@ import { configEnv } from "../../configENV.js";
 
 configEnv();
 
-import express, { ErrorRequestHandler } from "express";
+import express from "express";
 import "reflect-metadata";
 import bodyParser from "body-parser";
 import { MikroORM, RequestContext } from "@mikro-orm/core";
@@ -15,15 +15,31 @@ import { authMiddleware } from "./middlewares/auth.js";
 import { healthRouter, loginRouter, registerRouter, router } from "./routes/index.js";
 import { BASE_URL, FORCE_SHUT_DOWN_TIME } from "./constants.js";
 import { logConnection, logger } from "./debug/index.js";
+import { logRequest } from "./middlewares/logRequest.js";
 
 const app = express();
 const connections: Socket[] = [];
 
-const handleRequestError: ErrorRequestHandler = (error, req, res, next) => {
-  logger.error({ error, req, res }, "Internal Server Error");
-  res.status(500).json({ error: "Internal Server Error" });
+const handleShutdown = async () => {
+  logConnection("Closing server...");
+  if (DI.server) {
+    await new Promise((resolve) => DI.server.close(resolve));
 
-  next(error);
+    await DI.orm.close();
+    logConnection("Closing data base connection...");
+
+    connections.forEach((connection) => {
+      connection.end();
+      connection.destroy();
+    });
+
+    setTimeout(() => {
+      logConnection("Force closing all processes...");
+
+      process.exit(1);
+    }, FORCE_SHUT_DOWN_TIME);
+    process.exit(0);
+  }
 };
 
 const startServer = async () => {
@@ -50,57 +66,30 @@ const startServer = async () => {
     );
 
     app.use(healthRouter);
-    app.use(loginRouter);
-    app.use(registerRouter);
-    app.use(BASE_URL, authMiddleware, router);
+    app.use(logRequest, loginRouter);
+    app.use(logRequest, registerRouter);
+    app.use(BASE_URL, logRequest, authMiddleware, router);
 
     const PORT = Number(process.env.SERVER_PORT) || 8000;
     const HOST = process.env.SERVER_HOST || "localhost";
     logConnection(`Initializing listen process...`);
     DI.server = app.listen(PORT, HOST, () => {
-      logger.info(`Server is listening on http://${HOST}:${PORT}. It was started without errors.`);
       console.log(`Server is listening on http://${HOST}:${PORT}`);
     });
 
     DI.server.on("connection", (connection) => {
       logConnection(`Connection opening...`);
-
-      logger.info({ connection }, "Server made new connection");
       connections.push(connection);
 
       connection.on("close", () => {
         logConnection(`Connection closing...`);
-        logger.error({ connection }, "Server ends current connection");
 
         connections.filter((currentCon) => connection !== currentCon);
       });
     });
   } catch (error) {
-    app.use(handleRequestError);
-  }
-};
-
-const handleShutdown = async () => {
-  if (DI.server) {
-    await new Promise((resolve) => DI.server.close(resolve));
-    logConnection("Closing server...");
-
-    await DI.orm.close();
-    logConnection("Closing data base connection...");
-
-    connections.forEach((connection) => {
-      connection.end();
-      connection.destroy();
-    });
-
-    setTimeout(() => {
-      logConnection("Force closing all processes...");
-
-      logger.error("Could not end processes in time. FORCE END with status (1)");
-      process.exit(1);
-    }, FORCE_SHUT_DOWN_TIME);
-
-    process.exit(0);
+    logger.error({ error }, "Internal Server Error");
+    handleShutdown();
   }
 };
 

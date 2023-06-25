@@ -60,6 +60,7 @@ export const registerProfile = async (req: Request, res: Response) => {
       res
         .status(409)
         .send({ error: "Profile is already existed. Change email or try to login with this one" });
+      return;
     }
 
     await profileAPI.createProfile({

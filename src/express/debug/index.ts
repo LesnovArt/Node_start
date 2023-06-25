@@ -10,5 +10,5 @@ args.forEach((namespace) => {
   debug.enable(`${namespace}`);
 });
 
-export const logAuth = debug(process.env.DEBUG_NS_AUTH as string);
-export const logConnection = debug(process.env.DEBUG_NS_CONNECTION as string);
+export const logAuth = debug(process.env.DEBUG_NS_AUTH || "");
+export const logConnection = debug(process.env.DEBUG_NS_CONNECTION || "");
