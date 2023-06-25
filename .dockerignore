@@ -1,8 +1,15 @@
-node_modules
-coverage
+node_modules/
+coverage/
 
-.vscode
-.gitignore
-.git
+.vscode/
+.git/
+.husky/
 
 **/*/tests
+
+.gitignore
+jest.config
+.eslintignore
+.eslintrc.json
+
+README.md

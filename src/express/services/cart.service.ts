@@ -1,6 +1,6 @@
-import { Collection, EntityRepository } from "@mikro-orm/core";
+import { EntityRepository } from "@mikro-orm/core";
 
-import { Cart, CartItem, Profile, Product } from "../data-layer/entities/index.js";
+import { Cart, Profile, Product } from "../data-layer/entities/index.js";
 import { generateStringId, getMainCartData } from "../helpers/index.js";
 import { CartFull, CartItem as CartItemModel } from "../models/index.js";
 import { DI } from "../../microORM/index.js";

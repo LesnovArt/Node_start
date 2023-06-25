@@ -21,7 +21,7 @@ export const loginProfile = async (req: Request, res: Response) => {
     if (profile && (await bcrypt.compare(password, profile.password))) {
       const token = jwt.sign(
         { id: profile.id, email, role: profile.role },
-        process.env.TOKEN_KEY!,
+        process.env.TOKEN_KEY || "",
         {
           expiresIn: EXPIRE_JWT,
         }

@@ -45,7 +45,7 @@ const startServer = async () => {
     app.get("/", (_req, res) =>
       res.json({
         message:
-          "Welcome to MicroORM express TS example endpoint `/health` endpoint to check if it is working"!,
+          "Welcome to MicroORM express TS example endpoint `/health` endpoint to check if it is working",
       })
     );
 

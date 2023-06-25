@@ -25,7 +25,7 @@ export const authMiddleware = async (
   }
 
   try {
-    const user = jwt.verify(token, process.env.TOKEN_KEY!);
+    const user = jwt.verify(token, process.env.TOKEN_KEY || "");
 
     req.query.user = user as Profile;
     logger.info({ user, token }, "User successfully got into");
