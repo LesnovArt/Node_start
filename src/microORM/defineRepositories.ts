@@ -19,13 +19,8 @@ export const DI = {} as DI_Interface;
 export const defineRepositories = () => {
   DI.em = DI.orm.em;
   DI.profileRepository = DI.orm.em.getRepository(Profile);
-  console.log(`Profile repository`);
   DI.cartRepository = DI.orm.em.getRepository(Cart);
-  console.log(`Cart repository`);
   DI.cartItemRepository = DI.orm.em.getRepository(CartItem);
-  console.log(`CartItem repository`);
   DI.productRepository = DI.orm.em.getRepository(Product);
-  console.log(`Product repository`);
   DI.orderRepository = DI.orm.em.getRepository(Order);
-  console.log(`Order repository`);
 };

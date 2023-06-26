@@ -61,3 +61,33 @@ In case you want to test it without postman, you can just check in browser after
 - `http://localhost:8080/products` for GET all products;
 - `http://localhost:8080/products/1` for GET mocked product with id 1;
 - `http://localhost:8080/profile/cart` for GET user cart or generate it in case it was not still created;
+
+## Data base
+
+To run DB you should build the project - `yarn build`. Build and up docker image - `docker-compose up --build`. Now you are able just to start server with `yarn express`.
+
+## Data base migration
+
+To create migration, build app with `yarn build`, run DB docker image with `docker-compose up`, run command `yarn migrate:cr`.
+
+To use this generated schema run `yarn build`, then `yarn migrate:up`.
+
+## MicroOrm
+
+To create microOrm run `yarn orm:create`
+
+## Seed the data base
+
+Put the data into corresponding files inside `express/mocks` folder. Build the app. Run DB (check the DATA BASE block to do it). Run command `yarn seed:db`.
+
+## Logging and Debugging
+
+- `yarn debug` - node debug for developer mode
+- `yarn debug:prod` - node debug for prod mode (has no bunyan logger)
+- `yarn debug:auth` - node debug for auth in developer mode
+- `yarn debug:connect` - node debug for connection stuff in developer mode
+
+## Docker
+
+- run docker desktop or similar
+- run `docker-compose up --build` for first run and `docker-compose up` later.

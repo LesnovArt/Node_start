@@ -5,8 +5,11 @@ import jwt from "jsonwebtoken";
 import * as profileAPI from "../services/profile.service.js";
 import { Role } from "../models/index.js";
 import { EXPIRE_JWT } from "../constants.js";
+import { logAuth, logger } from "../debug/index.js";
 
 export const loginProfile = async (req: Request, res: Response) => {
+  logAuth(`Login was started`);
+
   const { email, password } = req.body;
 
   if (!(email && password)) {
@@ -18,7 +21,7 @@ export const loginProfile = async (req: Request, res: Response) => {
     if (profile && (await bcrypt.compare(password, profile.password))) {
       const token = jwt.sign(
         { id: profile.id, email, role: profile.role },
-        process.env.TOKEN_KEY!,
+        process.env.TOKEN_KEY || "",
         {
           expiresIn: EXPIRE_JWT,
         }
@@ -35,13 +38,14 @@ export const loginProfile = async (req: Request, res: Response) => {
 
     res.status(400).send("Invalid Credentials");
   } catch (error) {
+    logger.error({ error }, `Login endpoint access failed with error`);
     res.status(400).send(`Error while retrieving data from DB: ${error}`);
   }
 };
 
 export const registerProfile = async (req: Request, res: Response) => {
+  logAuth(`Registration was started`);
   const { isAdmin, email, password } = req.body;
-
   if (!(email && password)) {
     res.status(400).send("All inputs are required");
     return;
@@ -56,6 +60,7 @@ export const registerProfile = async (req: Request, res: Response) => {
       res
         .status(409)
         .send({ error: "Profile is already existed. Change email or try to login with this one" });
+      return;
     }
 
     await profileAPI.createProfile({
@@ -66,6 +71,7 @@ export const registerProfile = async (req: Request, res: Response) => {
 
     res.status(201).send("User successfully registered");
   } catch (error) {
+    logger.error({ error }, `Register endpoint access failed with error`);
     res.status(400).send({ error: "Bad request" });
   }
 };

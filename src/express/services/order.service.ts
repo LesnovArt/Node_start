@@ -22,8 +22,8 @@ export const saveOrder = async (order: OrderModel): Promise<OrderModel | null> =
     );
 
     const newOrder = {
-      ...order.payment,
-      ...order.delivery,
+      ...payment,
+      ...delivery,
       ...rest,
       items: itemsCollection,
     };

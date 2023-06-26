@@ -1,0 +1,16 @@
+node_modules/
+coverage/
+
+.vscode/
+.git/
+.husky/
+
+**/*/tests
+
+.gitignore
+jest.config
+.eslintignore
+.eslintrc.json
+yarn-error.log
+
+README.md

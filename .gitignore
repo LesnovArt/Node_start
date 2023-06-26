@@ -1,10 +1,10 @@
 ## node_modules
-node_modules
+node_modules/
 
 ## folders
-.vscode
-coverage
-dist
+.vscode/
+coverage/
+dist/
 
 ## log files
 yarn-error.log
